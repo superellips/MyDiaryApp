@@ -7,21 +7,33 @@ namespace MyDiaryApp.Pages;
 public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
-    public Entry? Entry { get; set; }
+    private readonly IEntryDbService _databaseService;
+    public List<Entry> Entries { get; set; } = new List<Entry>();
+    [BindProperty]
+    public Entry NewEntry { get; set; } = new Entry();
 
-    public IndexModel(ILogger<IndexModel> logger)
+    public IndexModel(ILogger<IndexModel> logger, IEntryDbService databaseService)
     {
         _logger = logger;
+        _databaseService = databaseService;
     }
 
     public void OnGet()
     {
-        Entry = new Entry(){
-            Id = Guid.NewGuid(),
-            Title = "My First Entry",
-            Body = "This is my first entry and I'm very happy with it.",
-            Created = DateTime.Now,
-            Edited = DateTime.Now
-        };
+        Entries = _databaseService.ReadAll().ToList();
+    }
+
+    public void OnPostAddEntry()
+    {
+        if (!ModelState.IsValid)
+        {
+            Page();
+        }
+
+        NewEntry.Created = DateTime.Now;
+
+        _databaseService.Create(NewEntry);
+
+        RedirectToPage();
     }
 }

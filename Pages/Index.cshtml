@@ -6,13 +6,28 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <h3>
-        @Model.Entry?.Title
-    </h3>
-    <p>
-        @Model.Entry?.Body
-        <br>
-        Created: @Model.Entry?.Created.ToShortDateString() Edited: @Model.Entry?.Edited.ToShortDateString()
-    </p>
+    @foreach (var entry in Model.Entries)
+    {
+        <h3>
+        @entry.Title
+        </h3>
+        <p>
+            @entry.Body
+            <br>
+            Created: @entry.Created.ToShortDateString() Edited: @entry.Edited.ToShortDateString()
+        </p>
+    }
+    <form method="post" asp-page-handler="AddEntry">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" asp-for="NewEntry.Title" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="body">Body:</label>
+            <textarea class="form-control" asp-for="NewEntry.Body" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Entry</button>
+    </form>
+
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
