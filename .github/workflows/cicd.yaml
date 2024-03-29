@@ -28,16 +28,26 @@ jobs:
         run: |
           docker build . -t ${{ secrets.DOCKERHUB_USERNAME }}/mydiaryapp:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/mydiaryapp:latest
+      
+      - name: Save compose as an artifact?
+        uses: actions/upload-artifact@v2
+        with:
+          name: compose
+          path: ${{ github.workspace }}/compose.yaml
   
   deploy_containers:
     runs-on: self-hosted
     needs: build_and_push
 
     steps:
+      - name: Download compose artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: compose
+          path: /tmp
       - name: Clean up old containers
         run: |
-          sudo docker compose --file compose.yaml down
+          sudo docker compose --file /tmp/compose.yaml down
       - name: Put up new containers
         run: |
-          sudo docker compose --file compose.yaml up -d
-        working-directory: ${{ github.workspace }}
+          sudo docker compose --file /tmp/compose.yaml up -d
