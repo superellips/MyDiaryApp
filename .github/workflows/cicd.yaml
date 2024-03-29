@@ -48,6 +48,7 @@ jobs:
       - name: Clean up old containers
         run: |
           sudo docker rm -f $(sudo docker ps -aq)
+          sudo docker image rm stjarnstoft/mydiaryapp
       - name: Put up new containers
         run: |
           sudo docker compose --file /tmp/compose.yaml up -d
