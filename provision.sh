@@ -42,6 +42,8 @@ function provisionEnvironment () {
     az vm open-port -g $rg_name -n $dockerhost_name --port 80
 }
 
+provisionEnvironment
+
 public_ip=$(az vm show -g $rg_name -n $dockerhost_name \
     --show-details --query [publicIps] --output tsv)
 
