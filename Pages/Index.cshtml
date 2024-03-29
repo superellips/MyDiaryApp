@@ -1,22 +1,32 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+<div class="container text-center">
     <h1 class="display-4">Welcome</h1>
-    @foreach (var entry in Model.Entries)
-    {
-        <h3>
-        @entry.Title
-        </h3>
-        <p>
-            @entry.Body
-            <br>
-            Created: @entry.Created.ToShortDateString() Edited: @entry.Edited.ToShortDateString()
-        </p>
-    }
+
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Choose a Date:</h3>
+            <form method="post" asp-page-handler="ChooseDate">
+                <input type="date" asp-for="SelectedDate" class="form-control" onchange="this.form.submit()" />
+            </form>
+        </div>
+        <div class="col-md-8">
+            <h3>Entries:</h3>
+            @foreach (var entry in Model.FilteredEntries)
+            {
+                <div class="entry">
+                    <h4><a asp-page="EntryPage" asp-route-created="@entry.Created.Date" asp-route-id="@entry.Id">@entry.Title</a></h4>
+                    <p>@entry.Body</p>
+                    <p>Created: @entry.Created.ToShortDateString() | Edited: @entry.Edited.ToShortDateString()</p>
+                </div>
+            }
+        </div>
+    </div>
+
     <form method="post" asp-page-handler="AddEntry">
         <div class="form-group">
             <label for="title">Title:</label>
@@ -28,5 +38,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Add Entry</button>
     </form>
+
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

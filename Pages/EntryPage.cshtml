@@ -1,0 +1,15 @@
+@page "{created:DateTime}/{id:guid}"
+@model EntryPageModel
+
+<h1>Entry Details</h1>
+<p>Created: @Model.Entry.Created (Edited: @Model.Entry.Edited)</p>
+
+<h3>@Model.Entry.Title</h3>
+
+<p>@Model.Entry.Body</p>
+
+<p>@Model.Entry.Id</p>
+
+<form method="post" asp-page-handler="DeleteEntry">
+    <button type="submit" asp-for="@Model.Entry.Id" onclick="return confirm('Are you sure you want to delete this entry?')">Delete Entry</button>
+</form>

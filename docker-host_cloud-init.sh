@@ -22,6 +22,7 @@ function installDocker () {
 
 # Setup selfhosted runner for GitHub actions
 function setupRunner () {
+    local prevDir=$(pwd)
     mkdir /home/$admin_user/actions-runner
     cd /home/$admin_user/actions-runner
     curl -o actions-runner-linux-x64-2.314.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.314.1/actions-runner-linux-x64-2.314.1.tar.gz      
@@ -30,12 +31,14 @@ function setupRunner () {
     sudo -u $admin_user ./config.sh --unattended --replace --url https://github.com/$gh_user/$app_name --token $token
     ./svc.sh install $admin_user
     ./svc.sh start
+    cd $prevDir
 }
 
 # Make containers
 function makeContainers () {
-    # This will fetch the image for my application
-    docker run -d -p 80:8080 --name $app_name stjarnstoft/${app_name,,}
+    curl https://raw.githubusercontent.com/superellips/MyDiaryApp/main/compose.yaml > /home/$admin_user/compose.yaml
+    docker compose --file /home/$admin_user/compose.yaml up -d
+    rm -f /home/$admin_user/compose.yaml
 }
 
 export DEBIAN_FRONTEND=noninteractive
