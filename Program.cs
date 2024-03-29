@@ -1,12 +1,28 @@
 using MyDiaryApp;
+using MyDiaryApp.Configuration;
 using MyDiaryApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add configuration settings to the container
+
+builder.Services.Configure<MongoDbEntrySettings>(builder.Configuration.GetSection("MongoDbEntrySettings"));
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-builder.Services.AddSingleton<IEntryDbService, InMemEntryDbService>();
+switch (builder.Configuration.GetValue<string>("EntryServiceImplementation"))
+{
+    case "MongoDb":
+        builder.Services.AddSingleton<IEntryDbService, MongoDbEntryService>();
+        break;
+    case "InMem":
+    default:
+        builder.Services.AddSingleton<IEntryDbService, InMemEntryDbService>();
+        break;
+}
+
+
 
 var app = builder.Build();
 
