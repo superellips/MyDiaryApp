@@ -4,17 +4,20 @@ namespace MyDiaryApp.Services;
 
 public class InMemEntryDbService : IEntryDbService
 {
-    private List<Entry> _entries = new List<Entry>();
-
-    public InMemEntryDbService()
+    private List<Entry> _entries = new List<Entry>()
     {
-        _entries.Add(new Entry(){
+        new Entry(){
             Id = Guid.NewGuid(),
             Title = "My First Entry",
             Body = "This is my first entry and I'm very happy with it.",
             Created = DateTime.Now,
             Edited = DateTime.Now
-        });
+        }
+    };
+
+    public InMemEntryDbService()
+    {
+
     }
 
     public Entry Create(Entry entry)
@@ -33,26 +36,34 @@ public class InMemEntryDbService : IEntryDbService
 
     public Entry Delete(Guid guid)
     {
-        var entry = _entries.FirstOrDefault(e => e.Id == guid) ??
-            throw new Exception();
-        _entries.Remove(entry);
+        var entry = Read(guid);
+        if (entry is not null) _entries.Remove(entry);
         return entry;
     }
 
     public Entry Read(Guid guid)
     {
         return _entries.FirstOrDefault(e => e.Id == guid) ??
-            throw new Exception();
+            throw new KeyNotFoundException($"Entry with Id {guid} not found");
     }
 
     public IEnumerable<Entry> ReadAll()
     {
-        return _entries;
+        var entriesList = new List<Entry>();
+        foreach (var e in _entries)
+        {
+            entriesList.Add(new Entry(){ Id = e.Id, Body = e.Body, Title = e.Title, Created = e.Created, Edited = e.Edited });
+        }
+        return entriesList;
     }
 
     public Entry Update(Entry entry, Guid guid)
     {
-        Delete(guid);
-        return Create(entry);
+        var originalEntry = _entries.FirstOrDefault(e => e.Id == guid) ?? throw new KeyNotFoundException($"Entry with Id {guid} not found");
+        originalEntry.Body = entry.Body;
+        originalEntry.Title = entry.Title;
+        originalEntry.Edited = DateTime.Now;
+
+        return Read(guid);
     }
 }
