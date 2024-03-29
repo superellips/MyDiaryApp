@@ -6,5 +6,13 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
+    <h3>
+        @Model.Entry?.Title
+    </h3>
+    <p>
+        @Model.Entry?.Body
+        <br>
+        Created: @Model.Entry?.Created.ToShortDateString() Edited: @Model.Entry?.Edited.ToShortDateString()
+    </p>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
