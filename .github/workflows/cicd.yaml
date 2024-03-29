@@ -26,16 +26,17 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build . -t ${{ secrets.DOCKERHUB_USERNAME }}/mydiaryapp:${{ github.sha }}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/mydiaryapp:${{ github.sha }}
+          docker build . -t ${{ secrets.DOCKERHUB_USERNAME }}/mydiaryapp:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/mydiaryapp:latest
   
   deploy_containers:
     runs-on: self-hosted
 
     steps:
-      - name: Clean up old container
+      - name: Clean up old containers
         run: |
-          sudo docker rm -f MyDiaryApp
-      - name: Put up new container
+          sudo docker compose down
+      - name: Put up new containers
         run: |
-          sudo docker run -d -p 80:8080 --name MyDiaryApp ${{ secrets.DOCKERHUB_USERNAME }}/mydiaryapp:${{ github.sha }}
+          sudo docker compose up -d
+        working-directory: ${{ github.workspace }}
