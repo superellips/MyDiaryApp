@@ -19,7 +19,7 @@
             @foreach (var entry in Model.FilteredEntries)
             {
                 <div class="entry">
-                    <h4><a asp-page="EntryPage" asp-route-created="@entry.Created.Date" asp-route-id="@entry.Id">@entry.Title</a></h4>
+                    <h4><a asp-page="EntryPage" asp-route-id="@entry.Id">@entry.Title</a></h4>
                     <p>@entry.Body</p>
                     <p>Created: @entry.Created.ToShortDateString() | Edited: @entry.Edited.ToShortDateString()</p>
                 </div>
