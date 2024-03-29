@@ -1,0 +1,12 @@
+@using MyDiaryApp.Models
+@model List<Entry>
+<script src="/_framework/aspnetcore-browser-refresh.js">
+    @foreach (var entry in Model)
+    {
+        <div class="entry">
+            <h4>@entry.Title</h4>
+            <p>@entry.Body</p>
+            <p>Created: @entry.Created.ToShortDateString() | Edited: @entry.Edited.ToShortDateString()</p>
+        </div>
+    }
+</script>
