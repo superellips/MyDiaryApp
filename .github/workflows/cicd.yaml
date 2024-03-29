@@ -47,7 +47,7 @@ jobs:
           path: /tmp
       - name: Clean up old containers
         run: |
-          sudo docker compose --file /tmp/compose.yaml down
+          sudo docker rm -f $(sudo docker ps -aq)
       - name: Put up new containers
         run: |
           sudo docker compose --file /tmp/compose.yaml up -d
