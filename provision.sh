@@ -23,21 +23,23 @@ function getRunnerToken () {
 # Get a temporary cloud init file for the Docker Host
 function getCloudInit () {
   cat docker-host_cloud-init.sh > $cloud_init
-  sed -i "4i token=$(getRunnerToken)" $cloud_init
-  sed -i "4i app_name=$app_name" $cloud_init
-  sed -i "4i gh_user=$gh_user" $cloud_init
-  sed -i "4i admin_user=$admin_user" $cloud_init
+  sed -i "5i token=$(getRunnerToken)" $cloud_init
+  sed -i "5i app_name=$app_name" $cloud_init
+  sed -i "5i gh_user=$gh_user" $cloud_init
+  sed -i "5i admin_user=$admin_user" $cloud_init
   echo $cloud_init
 }
 
 # Provisions the clouds environment
 function provisionEnvironment () {
+    local script=$(getCloudInit)
+
     az group create -n $rg_name -l $location
 
     az vm create -g $rg_name -n $dockerhost_name \
         --size Standard_B1s --image Ubuntu2204 \
         --generate-ssh-keys --admin-username $admin_user \
-        --custom-data @$(getCloudInit)
+        --custom-data @$script
 
     az vm open-port -g $rg_name -n $dockerhost_name --port 80
 }
