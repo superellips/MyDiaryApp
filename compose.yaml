@@ -1,6 +1,9 @@
 services:
   db:
     image: mongo
+    restart: always
+    volumes:
+      - mongodata:/data/db
   mongo-express:
     image: mongo-express
     restart: always
@@ -14,6 +17,9 @@ services:
       - 80:8080
     environment:
       - MongoDbEntrySettings__ConnectionString=mongodb://db:27017
+
+volumes:
+  mongodata:
 
 # services:
 #   server:
